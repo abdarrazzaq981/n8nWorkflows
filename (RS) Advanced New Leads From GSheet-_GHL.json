@@ -1,0 +1,1049 @@
+{
+  "name": "(RS) Advanced New Leads From GSheet->GHL",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "locationId",
+              "value": "hPKcLGGQN0DdZ7Qzd37A"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "name": "website",
+              "value": "={{ $json.website }}"
+            },
+            {
+              "name": "city",
+              "value": "={{ $json.city }}"
+            },
+            {
+              "name": "companyName",
+              "value": "={{ $json.companyName }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "firstName",
+              "value": "={{ $json.firstName }}"
+            },
+            {
+              "name": "lastName",
+              "value": "={{ $json.lastName }}"
+            },
+            {
+              "name": "tags",
+              "value": "=new_contact"
+            },
+            {
+              "name": "state",
+              "value": "={{ $json.state }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -576,
+        1072
+      ],
+      "id": "7f2c97f9-6883-42af-9108-e3d962d1a196",
+      "name": "HighLevel1",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1XGLerjCuraEz5bXEzFy_o-djUdEE85AadUK7_b71lro",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XGLerjCuraEz5bXEzFy_o-djUdEE85AadUK7_b71lro/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1572518516,
+          "mode": "list",
+          "cachedResultName": "apollo 2 ghl",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XGLerjCuraEz5bXEzFy_o-djUdEE85AadUK7_b71lro/edit#gid=1572518516"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.name }}",
+            "state": "={{ $json.state }}",
+            "city": "={{ $json.city }}",
+            "website": "={{ $json.organization.website_url }}",
+            "phone": "={{ $json.organization.primary_phone.number }}",
+            "email": "={{ $json.email }}",
+            "headline": "={{ $json.headline }}",
+            "lastName": "={{ $json.last_name }}",
+            "firstName": "={{ $json.first_name }}",
+            "companyName": "={{ $json.organization.name }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        864
+      ],
+      "id": "60190848-c9c9-45c5-8633-158957255e00",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "chatId": "=6294713109",
+        "text": "The accounts have successfully been uploaded to GHL.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        1200
+      ],
+      "id": "48596d15-071d-49a3-9bf8-9f8de9dbd7e3",
+      "name": "Send a text message",
+      "webhookId": "3601c504-d623-4bc8-b0ca-659e93766a1f",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://apps.emaillistverify.com/api/verifyApiFile",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "quality",
+              "value": "standard"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "file_contents",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        32,
+        352
+      ],
+      "id": "fe8911d6-e634-4125-9f46-79c7814eb021",
+      "name": "Email Verification",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Convert Apollo data to CSV format with all required columns\nconst items = $input.all();\nconst csvRows = ['First Name,Last Name,Email,Company,Phone,Added']; // Header row\n\nitems.forEach(item => {\n  if (item.json.email) {\n    const row = [\n      item.json.first_name || '',\n      item.json.last_name || '',\n      item.json.email || '',\n      item.json.employment_history?.[0]?.organization_name || item.json.organization?.name || '',\n      item.json.phone || '',\n      new Date().toLocaleDateString('en-US', { \n        year: 'numeric', \n        month: 'short', \n        day: 'numeric' \n      })\n    ];\n    \n    // Escape fields that contain commas or quotes\n    const escapedRow = row.map(field => {\n      const str = String(field);\n      if (str.includes(',') || str.includes('\"')) {\n        return `\"${str.replace(/\"/g, '\"\"')}\"`;\n      }\n      return str;\n    });\n    \n    csvRows.push(escapedRow.join(','));\n  }\n});\n\nconst csvContent = csvRows.join('\\n');\n\n// 🔧 Pull random number from \"Telegram Agent\" node\nconst randomNum = $('Telegram Agent').first().json.output['random #'];\n\n// ✅ Build filename dynamically\nconst fileName = `leads_to_verify_${randomNum}.csv`;\n\nreturn {\n  json: {\n    status: 'csv_created',\n    fileName\n  },\n  binary: {\n    data: {\n      data: Buffer.from(csvContent, 'utf8').toString('base64'),\n      mimeType: 'text/csv',\n      fileName\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        352
+      ],
+      "id": "4fdaa485-53f3-481b-b003-8401844fbe74",
+      "name": "CSV Converter"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -576,
+        608
+      ],
+      "id": "d87dfd03-1014-4d10-87b6-9345d58339b2",
+      "name": "Wait",
+      "webhookId": "8f62d72a-6b46-41a9-937a-651a5004eb9e"
+    },
+    {
+      "parameters": {
+        "url": "=https://apps.emaillistverify.com/api/maillists/{{ $json.data }}/progress ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -368,
+        608
+      ],
+      "id": "a9c94175-d3f5-45ac-9faa-556bb7457c76",
+      "name": "Email Verification Progress"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "finished",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "63e4c9a0-d9a9-4978-90de-326cdce79247"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb4469d8-bc54-479a-9078-29dae5c45cc7",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "processing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -176,
+        608
+      ],
+      "id": "3ff20855-4db3-43d2-9d46-8940b43ad57b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "=https://apps.emaillistverify.com/api/maillists/{{ $('Email Verification').item.json.data }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        592
+      ],
+      "id": "0537753c-23e7-40cf-8eac-536f7f3471db",
+      "name": "Download verified emails"
+    },
+    {
+      "parameters": {
+        "jsCode": "// CSV string is coming in as $json.data\nconst csvContent = $json.data;\n\nif (!csvContent) {\n  throw new Error(\"No CSV data found in 'data' field.\");\n}\n\n// Step 1: Split into lines\nconst rows = csvContent.split(/\\r?\\n/).filter(r => r.trim() !== '');\nconst header = rows[0].split(',').map(h => h.trim());\n\n// Step 2: Parse each row into JSON\nconst items = rows.slice(1).map(row => {\n  const values = [];\n  let inQuotes = false;\n  let current = '';\n\n  for (let i = 0; i < row.length; i++) {\n    const char = row[i];\n    if (char === '\"' && row[i + 1] === '\"') {\n      current += '\"'; // escaped quote\n      i++;\n    } else if (char === '\"') {\n      inQuotes = !inQuotes;\n    } else if (char === ',' && !inQuotes) {\n      values.push(current);\n      current = '';\n    } else {\n      current += char;\n    }\n  }\n  values.push(current);\n\n  const obj = {};\n  header.forEach((h, i) => {\n    obj[h] = values[i] !== undefined ? values[i].trim() : '';\n  });\n\n  return { json: obj };\n});\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        864
+      ],
+      "id": "6fb43c9f-f267-4bb5-9a0c-73748bdcc10a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f022c253-d265-458c-99df-fff4601c7215",
+              "leftValue": "={{ $json['ELV Result'] }}",
+              "rightValue": "ok",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -368,
+        864
+      ],
+      "id": "383363ff-3a90-48cc-aba2-5607e6c1db16",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Email",
+              "field2": "email"
+            }
+          ]
+        },
+        "outputDataFrom": "input2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -176,
+        864
+      ],
+      "id": "228cbc68-d9f2-4621-8d55-1f16a31fa2fc",
+      "name": "Merge",
+      "alwaysOutputData": true,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e884a62-271f-4a2d-8d17-a6abc04ee872",
+              "name": "first_name",
+              "value": "={{ $json.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "dea10d58-fd1b-4866-b732-cb26bdae967b",
+              "name": "last_name",
+              "value": "={{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c63be7df-e104-4180-b8e1-22568f7f226a",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "03fbb69f-154c-4ff8-b055-0bb5e5792f03",
+              "name": "headline",
+              "value": "={{ $json.headline }}",
+              "type": "string"
+            },
+            {
+              "id": "f2d68c73-2cf7-44a9-b0fd-8c44594f0062",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "2acff3ec-2cb8-4544-9216-db205f0b4741",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            },
+            {
+              "id": "8bc5ca46-6f35-4e1f-a92a-93963552a56e",
+              "name": "state",
+              "value": "={{ $json.state }}",
+              "type": "string"
+            },
+            {
+              "id": "2ce070cf-7103-4fc9-b386-3da21abf0c98",
+              "name": "time_zone",
+              "value": "={{ $json.time_zone }}",
+              "type": "string"
+            },
+            {
+              "id": "ad1e53a7-a550-4f74-a5bb-834c5282869f",
+              "name": "organization.name",
+              "value": "={{ $json.organization.name }}",
+              "type": "string"
+            },
+            {
+              "id": "d8acfcca-fed5-404b-a944-b4c08b5267c7",
+              "name": "organization.website_url",
+              "value": "={{ $json.organization.website_url }}",
+              "type": "string"
+            },
+            {
+              "id": "d127aa83-d108-495c-b2d2-aa68e0c96fad",
+              "name": "organization.primary_phone.number",
+              "value": "={{ $json.organization.primary_phone.number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        352
+      ],
+      "id": "29d24747-a53b-4eed-8ffe-35d33d02a3b9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.error.status }}",
+                    "rightValue": 400,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    },
+                    "id": "30ffdb41-e16b-4f40-a130-5907e616815f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Error"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "36c290b3-4c6c-4883-a820-7d1ce403342a",
+                    "leftValue": "={{ $json.error.status }}",
+                    "rightValue": 200,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Success"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -368,
+        1072
+      ],
+      "id": "08c25c4a-c20a-4953-81bd-8014b0af305b",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "chatId": "6294713109",
+        "text": "={{ $json.error.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        1056
+      ],
+      "id": "6c0e4602-5e51-4db4-aae6-3a586ea5b628",
+      "name": "Send a text message1",
+      "webhookId": "34113083-a55d-469d-b8d0-aeda33011ae1",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1hfqQwHrsT6nc1vJAr9QqsCt0DUPC72vp",
+          "mode": "list",
+          "cachedResultName": "Leads upload",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1hfqQwHrsT6nc1vJAr9QqsCt0DUPC72vp"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        352
+      ],
+      "id": "6a6ecee5-c907-4cde-98ba-5a43d62af5c8",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "j6wS0aF7CqALzliW",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jkNUmEMPkPRMMLRryAztZVROr_o4UncnRzq7vuyfh48",
+          "mode": "list",
+          "cachedResultName": "File upload 10/1/2025",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jkNUmEMPkPRMMLRryAztZVROr_o4UncnRzq7vuyfh48/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -720,
+        352
+      ],
+      "id": "49250f12-fe94-408f-937f-3ca820ccbe2c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lcsoYN2irn2fgkGt",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Google Drive Trigger": [
+      {
+        "json": {
+          "parents": [
+            "1hfqQwHrsT6nc1vJAr9QqsCt0DUPC72vp"
+          ],
+          "lastModifyingUser": {
+            "displayName": "Randy",
+            "kind": "drive#user",
+            "me": true,
+            "permissionId": "00141068160922022510",
+            "emailAddress": "brightwaveai@gmail.com",
+            "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIIiQedRbe80yKASB45MfBK61S89ZoTzsesZoFvOoXsubkiPw=s64"
+          },
+          "owners": [
+            {
+              "displayName": "Randy",
+              "kind": "drive#user",
+              "me": true,
+              "permissionId": "00141068160922022510",
+              "emailAddress": "brightwaveai@gmail.com",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIIiQedRbe80yKASB45MfBK61S89ZoTzsesZoFvOoXsubkiPw=s64"
+            }
+          ],
+          "permissions": [
+            {
+              "kind": "drive#permission",
+              "id": "00141068160922022510",
+              "type": "user",
+              "emailAddress": "brightwaveai@gmail.com",
+              "role": "owner",
+              "displayName": "Randy",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIIiQedRbe80yKASB45MfBK61S89ZoTzsesZoFvOoXsubkiPw=s64",
+              "deleted": false,
+              "pendingOwner": false
+            }
+          ],
+          "spaces": [
+            "drive"
+          ],
+          "capabilities": {
+            "canAcceptOwnership": false,
+            "canAddChildren": false,
+            "canAddMyDriveParent": false,
+            "canChangeCopyRequiresWriterPermission": true,
+            "canChangeItemDownloadRestriction": true,
+            "canChangeSecurityUpdateEnabled": false,
+            "canChangeViewersCanCopyContent": true,
+            "canComment": true,
+            "canCopy": true,
+            "canDelete": true,
+            "canDisableInheritedPermissions": false,
+            "canDownload": true,
+            "canEdit": true,
+            "canEnableInheritedPermissions": true,
+            "canListChildren": false,
+            "canModifyContent": true,
+            "canModifyContentRestriction": true,
+            "canModifyEditorContentRestriction": true,
+            "canModifyOwnerContentRestriction": true,
+            "canModifyLabels": false,
+            "canMoveChildrenWithinDrive": false,
+            "canMoveItemIntoTeamDrive": true,
+            "canMoveItemOutOfDrive": true,
+            "canMoveItemWithinDrive": true,
+            "canReadLabels": false,
+            "canReadRevisions": true,
+            "canRemoveChildren": false,
+            "canRemoveContentRestriction": false,
+            "canRemoveMyDriveParent": true,
+            "canRename": true,
+            "canShare": true,
+            "canTrash": true,
+            "canUntrash": true
+          },
+          "permissionIds": [
+            "00141068160922022510"
+          ],
+          "linkShareMetadata": {
+            "securityUpdateEligible": false,
+            "securityUpdateEnabled": true
+          },
+          "downloadRestrictions": {
+            "itemDownloadRestriction": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            },
+            "effectiveDownloadRestrictionWithContext": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            }
+          },
+          "kind": "drive#file",
+          "id": "1-0Ev8JXhwK3edt6n1p-FSLpyhWG9Ih-j",
+          "name": "File upload 10_1_2025.xlsx",
+          "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "starred": false,
+          "trashed": false,
+          "explicitlyTrashed": false,
+          "version": "3",
+          "webContentLink": "https://drive.google.com/uc?id=1-0Ev8JXhwK3edt6n1p-FSLpyhWG9Ih-j&export=download",
+          "webViewLink": "https://docs.google.com/spreadsheets/d/1-0Ev8JXhwK3edt6n1p-FSLpyhWG9Ih-j/edit?usp=drivesdk&ouid=111264369605270372374&rtpof=true&sd=true",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "hasThumbnail": true,
+          "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/AJQWtBPUW92AzepMlcQi_Q8T_qugkSPqaHyGdUauciwmq5G4eDOeNraFsNp7HqEI9uce3QSqLFfuyNOGLkNcDSZBvpyQ4cXzwf-j_qkqxw8tGHaEAA=s220",
+          "thumbnailVersion": "1",
+          "viewedByMe": true,
+          "viewedByMeTime": "2025-10-01T18:14:03.104Z",
+          "createdTime": "2025-10-01T18:14:03.104Z",
+          "modifiedTime": "2025-10-01T18:13:57.000Z",
+          "modifiedByMeTime": "2025-10-01T18:13:57.000Z",
+          "modifiedByMe": true,
+          "shared": false,
+          "ownedByMe": true,
+          "viewersCanCopyContent": true,
+          "copyRequiresWriterPermission": false,
+          "writersCanShare": true,
+          "originalFilename": "File upload 10_1_2025.xlsx",
+          "fullFileExtension": "xlsx",
+          "fileExtension": "xlsx",
+          "md5Checksum": "9e479506efb610115de9ae017397a943",
+          "sha1Checksum": "78f2dd2e5f7725f11e04b3dcc87dd503f31dd4ac",
+          "sha256Checksum": "4d09bd4225d2551e15cb0f888d1b3ea28af75dcfb7f4090618b0541abc99fe3a",
+          "size": "90123",
+          "quotaBytesUsed": "90123",
+          "headRevisionId": "0B7_azakTaBvdT2VxaG5BQmF6WEVMeFdPRFpiYmNqQ2NuNTM4PQ",
+          "isAppAuthorized": false,
+          "inheritedPermissionsDisabled": false
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "HighLevel1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HighLevel1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Verification": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CSV Converter": {
+      "main": [
+        [
+          {
+            "node": "Email Verification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Email Verification Progress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Verification Progress": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Download verified emails",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download verified emails": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "CSV Converter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "985bcb9f-fe13-42cd-a6af-c063eb3a824f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "XPTXjuAwP2VIhiCr",
+  "tags": []
+}

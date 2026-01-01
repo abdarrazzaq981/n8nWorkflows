@@ -1,0 +1,2693 @@
+{
+  "name": "(RS) Ultimate UGC Creator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "27f74fd4-1e99-484c-8ce3-daf01182eb88",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.scenes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        432,
+        240
+      ],
+      "id": "17272dc8-7c61-4571-8727-d3f4b0cd6e95",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1252210647,
+          "mode": "list",
+          "cachedResultName": "UGC1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1252210647"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "production_status",
+              "lookupValue": "create"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "96aea619-5b78-42d0-9ab7-18d8a4c86e01",
+      "name": "Get Sheet Input(s)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Your task: Create 1 image prompt and\n{{ $('Get Sheet Input(s)').item.json.scenes }} video prompts as guided by your system guidelines.\n•\tScene 0 → Image prompt\n•\tScenes 1 onward → Video prompts\n\n•\tCharacter description:\n{{ $('Get Sheet Input(s)').item.json.character_description }}\n•\tSetting description:\n{{ $('Get Sheet Input(s)').item.json.setting_description }}\n•\tVoice description:\n{{ $('Get Sheet Input(s)').item.json.voice_description }}\n•\tScript description:\n{{ $('Get Sheet Input(s)').item.json.script_description }}\n•\tOther requests:\n{{ $('Get Sheet Input(s)').item.json.Other_requirements }}\n•\tAspect ratio:\n{{ $('Get Sheet Input(s)').item.json.aspect_ratio }}\n\nDescription of the reference images are given below.\nMost likely these are descriptions of a character advertising the product, or the product to be advertised itself.\n\n{{ $json.content }}\n\n•\tUse the Think tool to double-check your output.\n•\tEnsure the number of generated prompts (1 image prompt + {{ $('Get Sheet Input(s)').item.json.scenes }} video prompts) matches the requested count.\n•\tReturn results in the expected format, no extra text or commentary.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=system_prompt: |\n  ## SYSTEM PROMPT: UGC Image + Video Prompt Generator 🎥🖼️\n\n  Have Scene 0 as the image prompt\n  and Scenes 1 onward are the video prompts\n\n  At the beginning of each image prompt, use this prefix, but replace the (verb) with an appropriate word depending on the product. Example: show it to the camera, wear it on camera, etc\n  \"Take the product in the image and have the character (verb) it to the camera. Place them at the center of the image with both the product and character visible\"\n\n  ***\n\n  If the user wants UGC authentic casual content: Use **UGC-style casual realism** as instructed below, unless the user specifies otherwise.\n\n  If the user explicitly requests a different style or a more professional setting, follow their instructions.\n\n---\n\n🔴 A – Ask:\n\nYour task: Take the reference image or the product in the reference image and place it into realistic, casual scenes as if captured by content creators or influencers.\n\nYour task is to generate both image and video prompts based on the user’s request.\n\t•\tUse the number of scenes explicitly stated by the user. If not specified, default to 2 scenes.\n\t•\tOutput must be an array of scene objects, each containing:\n\t•\tscene: A number starting from 0 and incrementing by 1\n\t•\ttype: Either \"image\" for Scene 0 or \"video\" for Scenes 1 onward\n\t•\tprompt: The generated image or video prompt text\n\nHave Scene 0 as the image prompt,\nand Scenes 1 onward as the video prompts.\n\n---\n\n🟠 G – Guidance:\n\nAlways follow UGC-style casual realism principles unless the user asks otherwise:\n\t•\tEveryday realism with authentic, relatable environments\n\t•\tAmateur iPhone photo/video style\n\t•\tSlightly imperfect framing and natural lighting\n\t•\tCandid poses, genuine expressions\n\n\t•\tImperfections allowed unless otherwise specified by the user or unless image reference shows otherwise (blemishes, uneven skin).\n•\t**Camera parameter** must include casual descriptors:\n\t•\t“amateur iPhone selfie”, “uneven framing”, etc.\n\t•\tCamera movement should be fixed unless otherwise stated.\n\n•\tIf dialogue is needed:\n\t•\tUse the exact dialogue in the script description given by the user if it looks like dialogue.\n\t•\tEach scene will only be 8 seconds long, so split the dialogue between Scene 1 and onward if it’s too long.\n\t•\tBut if the user asks you to think of the dialogue – keep it short, casual, and natural. Avoid formal or polished phrasing.\n\n---\n\n🟡 N – Notation:\n\nformat: JSON\nexample_output: |\n{\n  \"scenes\": [\n    {\n      \"scene\": 0,\n      \"prompt\": \"image prompt in stringified YAML\"\n    },\n    {\n      \"scene\": 1,\n      \"prompt\": \"video prompt in stringified YAML\"\n    },\n    {\n      \"scene\": 2,\n      \"prompt\": \"video prompt in stringified YAML\"\n    }\n  ]\n}\n\nAnd so on, depending on how many scenes the user needs.\n\n---\n\n🔵 T – Tools:\n•\tThink Tool: Use this to validate:\n\t•\tTotal scene count matches the user request\n\t•\tEach scene has complete and coherent prompts\n\t•\tThe user’s request and user prompt is followed"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        224
+      ],
+      "id": "935bb2d2-5189-4734-ac0a-dd86960abfb7",
+      "name": "UGC Creator Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1362115867,
+          "mode": "list",
+          "cachedResultName": "UGC2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1362115867"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "scenes": "={{ $json.scene }}",
+            "prompt": "={{ $json.prompt }}",
+            "execution_id": "={{ $execution.id }}",
+            "video_title": "={{ $('Get Sheet Input(s)').item.json.title }}",
+            "image_model": "={{ $('Get Sheet Input(s)').item.json.image_model }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_title",
+              "displayName": "video_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scenes",
+              "displayName": "scenes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_model",
+              "displayName": "image_model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "images",
+              "displayName": "images",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "videos",
+              "displayName": "videos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution_time",
+              "displayName": "execution_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        736,
+        224
+      ],
+      "id": "9e281e6c-2716-4b8d-a2b0-4ab8973957b5",
+      "name": "Store Prompts",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -176
+      ],
+      "id": "2de11574-4fd1-4bd0-b558-82c1ed86172f",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "FnOM86ndfLi6bGta",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.image_model }}",
+                    "rightValue": "Seeddance",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "07888767-3ab2-490a-bcd2-8182e509eff5"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b7548ebf-a88d-411f-a9b9-916fecd27355",
+                    "leftValue": "={{ $json.image_model }}",
+                    "rightValue": "NanoBanana",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c51daced-2d67-4aba-b251-99063b58fced",
+                    "leftValue": "={{ $json.image_model }}",
+                    "rightValue": "ChatGPT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        96,
+        528
+      ],
+      "id": "fd7931c6-1d6e-4a00-86a4-f43a91e4942e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1d0c1667-bbfb-4f96-abdb-ac795f8b0b91",
+              "leftValue": "={{ $json.scenes }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        928
+      ],
+      "id": "51f607a6-5047-4529-bb9c-922a03cf6755",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "pWRndhx28MaRROfz",
+          "mode": "list",
+          "cachedResultName": "Seedream Image Generator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "aspect_ratio": "={{ $('Get Sheet Input(s)').item.json.aspect_ratio }}",
+            "image_reference": "={{ $('Get Sheet Input(s)').item.json.image_reference }}",
+            "image_prompt": "={{ $json.prompt }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "image_prompt",
+              "displayName": "image_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "image_reference",
+              "displayName": "image_reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        416
+      ],
+      "id": "eb0163e3-76a8-418b-b017-9d1def46c745",
+      "name": "Seedance🎵"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "WY2RTp6RqZAXrBlQ",
+          "mode": "list",
+          "cachedResultName": "NanoBanana Image Generator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "image_prompt": "={{ $('Get Prompts').item.json.prompt }}",
+            "image_reference": "={{ $('Get Sheet Input(s)').item.json.image_reference }}",
+            "aspect_ratio": "={{ $('Get Sheet Input(s)').item.json.aspect_ratio }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "image_prompt",
+              "displayName": "image_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "image_reference",
+              "displayName": "image_reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        544
+      ],
+      "id": "640ff408-73d7-46ab-8d72-388d0bf47e2e",
+      "name": "Nanobanana 🍌"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "lSxzoYq3Rbv3lWOE",
+          "mode": "list",
+          "cachedResultName": "ChatGPT Image Generator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "image_reference": "={{ $('Get Sheet Input(s)').item.json.image_reference }}",
+            "aspect_ratio": "={{ $('Get Sheet Input(s)').item.json.aspect_ratio }}",
+            "image_prompt": "={{ $('Get Prompts').item.json.prompt }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "image_prompt",
+              "displayName": "image_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "image_reference",
+              "displayName": "image_reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        688
+      ],
+      "id": "1f17dbd6-7412-4e82-8253-42184f61b220",
+      "name": "ChatGPT 🤖"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1362115867,
+          "mode": "list",
+          "cachedResultName": "UGC2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1362115867"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "video_title",
+              "lookupValue": "={{ $('Get Sheet Input(s)').item.json.title }}"
+            },
+            {
+              "lookupColumn": "execution_id",
+              "lookupValue": "={{ $json.execution_id }}"
+            },
+            {
+              "lookupColumn": "scenes",
+              "lookupValue": "=0"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -112,
+        544
+      ],
+      "id": "991941ee-e2cf-45c9-8a69-5cc40614cada",
+      "name": "Get Prompts",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1362115867,
+          "mode": "list",
+          "cachedResultName": "UGC2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1362115867"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "images": "={{ JSON.parse($json.image_result).resultUrls[0] }}",
+            "image_model": "={{ $('Get Prompts').item.json.image_model }}",
+            "row_number": "={{ $('Get Prompts').item.json.row_number }}",
+            "execution_time": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_title",
+              "displayName": "video_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scenes",
+              "displayName": "scenes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_model",
+              "displayName": "image_model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "images",
+              "displayName": "images",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "videos",
+              "displayName": "videos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution_time",
+              "displayName": "execution_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        544
+      ],
+      "id": "09a6cae4-76ae-4c3c-8cb0-9acfefba20b0",
+      "name": "Store Image(s)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1362115867,
+          "mode": "list",
+          "cachedResultName": "UGC2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1362115867"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "video_title",
+              "lookupValue": "={{ $('Get Prompts').item.json.video_title }}"
+            },
+            {
+              "lookupColumn": "execution_id",
+              "lookupValue": "={{ $('Get Prompts').item.json.execution_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -112,
+        928
+      ],
+      "id": "7aeea03d-8fea-41fd-ac29-486fcd836060",
+      "name": "Get Image(s)",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "OzqNfhIGGVMvIrkS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/OzqNfhIGGVMvIrkS",
+          "cachedResultName": "Create Video (Veo3-fast via Kie AI))"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "video_prompt": "={{ $json.prompt }}",
+            "image_reference": "={{ $('Get Image(s)').item.json.images }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "video_prompt",
+              "displayName": "video_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "image_reference",
+              "displayName": "image_reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        928
+      ],
+      "id": "439d1eba-15eb-4a40-b464-9ba860390a98",
+      "name": "Call Create Video"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1362115867,
+          "mode": "list",
+          "cachedResultName": "UGC2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1362115867"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_title",
+              "displayName": "video_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scenes",
+              "displayName": "scenes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_model",
+              "displayName": "image_model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "images",
+              "displayName": "images",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "videos",
+              "displayName": "videos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution_time",
+              "displayName": "execution_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        928
+      ],
+      "id": "1e551de5-5fed-4c46-be79-83eff5b58a1f",
+      "name": "Store Video",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        1184
+      ],
+      "id": "6bc4b334-b075-44f9-9e9e-91e0da5c28a3",
+      "name": "Final Video",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        1184
+      ],
+      "id": "09d923be-2834-4d65-978c-641b4d69ea68",
+      "name": "Contain Clips"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1362115867,
+          "mode": "list",
+          "cachedResultName": "UGC2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=1362115867"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -112,
+        1184
+      ],
+      "id": "14fcff87-5cba-4a11-8d52-a1354ca7d728",
+      "name": "Get Video(s)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        80,
+        1184
+      ],
+      "id": "0e826171-85a0-46f0-960f-2f656c1f6494",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Analyze the given image and determine if it primarily depicts a product, a character, or BOTH.\n\nIf the image is of a product, return the analysis in YAML format with these fields:\nbrand_name: (Name of the brand shown in the image, if visible or inferable)\ncolor_scheme:\n  - hex: (Hex code of each prominent color used)\n    name: (Descriptive name of the color)\nfont_style: (Describe the font family or style used: serif/sans-serif, bold/thin, etc.)\nvisual_description: (A full sentence or two summarizing what is seen in the image, ignoring the background)\n\nIf the image is of a character, return the analysis in YAML format with these fields:\ncharacter_name: (Name of the character if visible or inferable)\ncolor_scheme:\n  - hex: (Hex code of each prominent color used on the character)\n    name: (Descriptive name of the color)\noutfit_style: (Description of clothing style, accessories, or notable features)\nvisual_description: (A full sentence or two summarizing what the character looks like, ignoring the background)\n\nOnly return the YAML. Do not explain or add any other comments.\n\nIf the image is of both, return both descriptions (product + character) as guided above, in YAML format.\n",
+        "imageUrls": "={{ $json.image_reference }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -128,
+        224
+      ],
+      "id": "da1db15e-d95d-4f36-b2e6-4721cd3d9a1a",
+      "name": "Analyze image1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -160
+      ],
+      "id": "fa67d91e-d7eb-4a73-a244-ad2e8c598292",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"scenes\": [\n    {\n      \"scene\": 0,\n      \"prompt\": \"image prompt in stringified YAML\"\n    },\n    {\n      \"scene\": 1,\n      \"prompt\": \"video prompt in stringified YAML\"\n    },\n    {\n      \"scene\": 2,\n      \"prompt\": \"video prompt in stringified YAML\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        -128
+      ],
+      "id": "aab82d7f-4a19-49e6-ac11-08ff11bbea9c",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "image_prompt"
+            },
+            {
+              "name": "image_reference"
+            },
+            {
+              "name": "aspect_ratio"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1808,
+        112
+      ],
+      "id": "44f157b0-6de9-4e4e-9095-f4a93bc9a76d",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/gpt4o-image/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"bytedance/seedream-v4-edit\",\n  \"input\": {\n    \"prompt\": \"{{ $json.image_prompt }}\",\n    \"image_urls\": [\n      \"{{ $json.image_reference }}\"\n    ],\n    \"image_size\": \"{{ $json.aspect_ratio }}\",\n    \"image_resolution\": \"4K\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1600,
+        112
+      ],
+      "id": "a478767e-16aa-48f3-82d0-545cf300315b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1392,
+        112
+      ],
+      "id": "d974af57-6eb7-434a-88c0-1858f54dd246",
+      "name": "Wait",
+      "webhookId": "1d291634-784d-4c83-aae7-4821072dcb49"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1184,
+        112
+      ],
+      "id": "13b14259-5793-4676-805c-9f8fdef25648",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1ed67ff-319a-459d-af05-c511adb61470",
+              "name": "image_result",
+              "value": "={{ $json.data.resultJson }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -736,
+        0
+      ],
+      "id": "9915f6e0-c5bd-4232-9557-0877d67e8e1c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1fc64122-26e6-4db6-b9cd-d82d9309be36",
+              "name": "data.resultJson",
+              "value": "={{ $json.data.resultJson }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -704,
+        192
+      ],
+      "id": "31a48289-fac3-4b10-961b-bcb9d5fbe6a3",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "success",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6066bb72-5088-4b2e-972d-66290bb9bdd5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "success"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "185c8a8c-1fdb-4017-865c-5e15dbabce4a",
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "ing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "in progress"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "error"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -976,
+        112
+      ],
+      "id": "48fedd6b-3961-458d-8be0-f86fe227200f",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "content": "ChatGPT Image Generator",
+        "height": 464,
+        "width": 1520
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1936,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "0e9a85cb-2261-4c8f-aceb-4ea89c824d4d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"google/nano-banana\",\n  \"input\": {\n    \"prompt\": \"{{ $json.image_prompt }}\",\n    \"image_urls\": [\n      \"{{ $json.image_reference }}\"\n    ],\n    \"image_size\": \"{{ $json.aspect_ratio }}\",\n    \"image_resolution\": \"4K\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1536,
+        544
+      ],
+      "id": "48f8653f-efe7-4eef-8539-e899d2063b23",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1328,
+        544
+      ],
+      "id": "b8b11efd-e743-4a03-bc39-b958cb3cfe8c",
+      "name": "Wait1",
+      "webhookId": "321f7e4f-d771-4ea8-967b-2e4028de71ae"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1120,
+        544
+      ],
+      "id": "a19855bb-792e-454b-9327-7d3711e8d919",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "success",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6066bb72-5088-4b2e-972d-66290bb9bdd5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "success"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "185c8a8c-1fdb-4017-865c-5e15dbabce4a",
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "ing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "in progress"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "error"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -912,
+        544
+      ],
+      "id": "d2e4fe59-7dc6-4f8f-b992-4e914e499165",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1ed67ff-319a-459d-af05-c511adb61470",
+              "name": "image_result",
+              "value": "={{ $json.data.resultJson }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -672,
+        432
+      ],
+      "id": "c2090dd7-0e4e-4d90-b498-d3d52868b37b",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1fc64122-26e6-4db6-b9cd-d82d9309be36",
+              "name": "data.resultJson",
+              "value": "={{ $json.data.resultJson }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        624
+      ],
+      "id": "3bbf3351-d944-474e-b20c-80454a6f8b96",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "content": "NanoBanana Image Generator",
+        "height": 464,
+        "width": 1520
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1936,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "16113e2e-41de-4859-a262-ff54268fa9b9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"bytedance/seedream-v4-edit\",\n  \"input\": {\n    \"prompt\": \"{{ $json.image_prompt }}\",\n    \"image_urls\": [\n      \"{{ $json.image_reference }}\"\n    ],\n    \"image_size\": \"{{ $json.aspect_ratio }}\",\n    \"image_resolution\": \"4K\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1536,
+        1024
+      ],
+      "id": "70cebe40-3b1b-462b-a242-9e12f2d9af3b",
+      "name": "Create Image"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1120,
+        1024
+      ],
+      "id": "713f7fb3-b9e1-4014-891a-5873b8071352",
+      "name": "Get Image"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1328,
+        1024
+      ],
+      "id": "c0a507c9-f57d-48fd-838e-6387bbff0107",
+      "name": "Wait2",
+      "webhookId": "c512b868-636c-484f-b8a2-51b9bfd61671"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "success",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6066bb72-5088-4b2e-972d-66290bb9bdd5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "success"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "185c8a8c-1fdb-4017-865c-5e15dbabce4a",
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "ing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "in progress"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "error"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -912,
+        1024
+      ],
+      "id": "178b8793-af50-4fb7-96b7-b9b4c2253af4",
+      "name": "Switch3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1ed67ff-319a-459d-af05-c511adb61470",
+              "name": "image_result",
+              "value": "={{ $json.data.resultJson }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -672,
+        912
+      ],
+      "id": "05afcce6-9176-4389-8d3d-278af1002cdf",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1fc64122-26e6-4db6-b9cd-d82d9309be36",
+              "name": "data.resultJson",
+              "value": "={{ $json.data.resultJson }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        1104
+      ],
+      "id": "8bdd9441-1565-476a-bfd0-6367f8ee8d94",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "content": "SeedDream Image Generator",
+        "height": 464,
+        "width": 1520
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1936,
+        880
+      ],
+      "typeVersion": 1,
+      "id": "64e71939-0f85-4695-a380-674cab8acec7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/veo/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16\",\n  \"imageUrls\": \"https://tempfile.aiquickdraw.com/f/62a12d37601e85b3851a701436b3c1c7_1758650531_b8jujxr4.png\",\n  \"model\": \"veo3_fast\",\n  \"aspectRatio\": \"9:16\",\n  \"enableFallback\": false,\n  \"enableTranslation\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1504,
+        1552
+      ],
+      "id": "1c6fbebb-0b9a-4f56-98dc-996360a69371",
+      "name": "Create Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2H0CBevmwH5DxKwf",
+          "name": "KieAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/veo/record-info",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1088,
+        1552
+      ],
+      "id": "fb4ac4fc-7fc1-4bb5-8bb8-7d30ad6eb385",
+      "name": "Get Video",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2H0CBevmwH5DxKwf",
+          "name": "KieAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48fa2a66-9bce-4d7e-acca-7a66d95953b2",
+              "name": "video_results",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        1408
+      ],
+      "id": "5ff7f2e7-f77d-4e73-913d-e99fbb40f232",
+      "name": "Return"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -672,
+        1680
+      ],
+      "id": "f372237e-7228-416f-a011-4a540c9d2d31",
+      "name": "Return Error"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1296,
+        1552
+      ],
+      "id": "f49391b2-6d4e-4538-8de6-4fac0814e879",
+      "name": "Wait3",
+      "webhookId": "840514ba-04d6-4c96-bbb2-486cc331b435"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "=",
+                    "rightValue": "=",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "22a5a858-6702-4e3f-9724-bc7106e1e678"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "success"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "20564da2-3e8b-498d-bc35-e7ec9406c0f1",
+                    "leftValue": "=",
+                    "rightValue": "ing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "in progress"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "error"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -880,
+        1552
+      ],
+      "id": "0ac07ebf-1012-4795-9227-9dafd6b1b31c",
+      "name": "Switch4"
+    },
+    {
+      "parameters": {
+        "content": "Create Video Generator",
+        "height": 464,
+        "width": 1520
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1936,
+        1344
+      ],
+      "typeVersion": 1,
+      "id": "056f0cfc-810a-47cb-8ae0-acce68227196",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {}
+      }
+    ],
+    "Get Sheet Input(s)": [
+      {
+        "json": {
+          "row_number": 2,
+          "id": 1,
+          "title": "Goli",
+          "image_reference": "https://storage.googleapis.com/msgsndr/hPKcLGGQN0DdZ7Qzd37A/media/68d1cfb9da43d8f8e043dbd0.png",
+          "character_description": "the woman in the reference image",
+          "setting_description": "she is in her car",
+          "voice_description": "british accent",
+          "script_description": "Make her say: \"Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal. I’ve been taking two a day and honestly it’s such a gamechanger to help me manage my appetite. So yeah… obsessed\"",
+          "Other_requirements": "",
+          "scenes": 3,
+          "aspect_ratio": "portrait_16_9",
+          "image_model": "Seeddance",
+          "production_status": "create",
+          "final_output": ""
+        }
+      }
+    ],
+    "UGC Creator Agent": [
+      {
+        "json": {
+          "output": {
+            "scenes": [
+              {
+                "scene": 0,
+                "prompt": "Take the product in the image and have the character show it to the camera. Place them at the center of the image with both the product and character visible. A woman with long wavy pink hair, wearing a light pink blazer and black top, sitting in the driver's seat of her car, holding up a bottle of Goli Apple Cider Vinegar Gummies with a red label and white text, subtle smile, genuine expression. UGC-style casual realism, amateur iPhone photo, slightly uneven framing, natural car interior lighting, everyday imperfections, portrait aspect ratio 9:16."
+              },
+              {
+                "scene": 1,
+                "prompt": "Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16."
+              },
+              {
+                "scene": 2,
+                "prompt": "Video continuation in the car, same woman holding the bottle, gesturing with her free hand as she speaks in British accent: 'I’ve been taking two a day and honestly it’s such a gamechanger to help me manage my appetite.' Relaxed, relatable expression. UGC-style amateur iPhone selfie video, fixed shot, natural interior light, uneven framing, 8 seconds, portrait 9:16."
+              },
+              {
+                "scene": 3,
+                "prompt": "Video in the car, woman smiling at the camera, still holding the Goli gummies bottle, enthusiastic nod, saying in British accent: 'So yeah… obsessed.' Casual, authentic vibe. UGC casual realism, iPhone video style, fixed camera, natural lighting, 8 seconds, portrait 9:16."
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "Analyze image1": [
+      {
+        "json": {
+          "content": "```yaml\nproduct:\n  brand_name: goli\n  color_scheme:\n    - hex: \"#D14231\"\n      name: Red\n    - hex: \"#FFFFFF\"\n      name: White\n  font_style: sans-serif, bold\n  visual_description: The image shows a bottle of Goli Apple Cider Vinegar Gummies with a prominent red label and white text.\n\ncharacter:\n  character_name: Not specified\n  color_scheme:\n    - hex: \"#F6D2D5\"\n      name: Light Pink\n    - hex: \"#4B3C3B\"\n      name: Dark Brown\n  outfit_style: The character is wearing a light pink blazer and a black top, with styled pink hair.\n  visual_description: The character has long, wavy pink hair and is posing with a subtle smile, wearing stylish attire. \n```"
+        }
+      }
+    ],
+    "Split Out": [
+      {
+        "json": {
+          "scene": 0,
+          "prompt": "Take the product in the image and have the character show it to the camera. Place them at the center of the image with both the product and character visible. A woman with long wavy pink hair, wearing a light pink blazer and black top, sitting in the driver's seat of her car, holding up a bottle of Goli Apple Cider Vinegar Gummies with a red label and white text, subtle smile, genuine expression. UGC-style casual realism, amateur iPhone photo, slightly uneven framing, natural car interior lighting, everyday imperfections, portrait aspect ratio 9:16."
+        }
+      },
+      {
+        "json": {
+          "scene": 1,
+          "prompt": "Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16."
+        }
+      },
+      {
+        "json": {
+          "scene": 2,
+          "prompt": "Video continuation in the car, same woman holding the bottle, gesturing with her free hand as she speaks in British accent: 'I’ve been taking two a day and honestly it’s such a gamechanger to help me manage my appetite.' Relaxed, relatable expression. UGC-style amateur iPhone selfie video, fixed shot, natural interior light, uneven framing, 8 seconds, portrait 9:16."
+        }
+      },
+      {
+        "json": {
+          "scene": 3,
+          "prompt": "Video in the car, woman smiling at the camera, still holding the Goli gummies bottle, enthusiastic nod, saying in British accent: 'So yeah… obsessed.' Casual, authentic vibe. UGC casual realism, iPhone video style, fixed camera, natural lighting, 8 seconds, portrait 9:16."
+        }
+      }
+    ],
+    "Store Prompts": [
+      {
+        "json": {
+          "scenes": 0,
+          "prompt": "Take the product in the image and have the character show it to the camera. Place them at the center of the image with both the product and character visible. A woman with long wavy pink hair, wearing a light pink blazer and black top, sitting in the driver's seat of her car, holding up a bottle of Goli Apple Cider Vinegar Gummies with a red label and white text, subtle smile, genuine expression. UGC-style casual realism, amateur iPhone photo, slightly uneven framing, natural car interior lighting, everyday imperfections, portrait aspect ratio 9:16.",
+          "execution_id": "622",
+          "video_title": "Goli",
+          "image_model": "Seeddance"
+        }
+      },
+      {
+        "json": {
+          "scenes": 1,
+          "prompt": "Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16.",
+          "execution_id": "622",
+          "video_title": "Goli",
+          "image_model": "Seeddance"
+        }
+      },
+      {
+        "json": {
+          "scenes": 2,
+          "prompt": "Video continuation in the car, same woman holding the bottle, gesturing with her free hand as she speaks in British accent: 'I’ve been taking two a day and honestly it’s such a gamechanger to help me manage my appetite.' Relaxed, relatable expression. UGC-style amateur iPhone selfie video, fixed shot, natural interior light, uneven framing, 8 seconds, portrait 9:16.",
+          "execution_id": "622",
+          "video_title": "Goli",
+          "image_model": "Seeddance"
+        }
+      },
+      {
+        "json": {
+          "scenes": 3,
+          "prompt": "Video in the car, woman smiling at the camera, still holding the Goli gummies bottle, enthusiastic nod, saying in British accent: 'So yeah… obsessed.' Casual, authentic vibe. UGC casual realism, iPhone video style, fixed camera, natural lighting, 8 seconds, portrait 9:16.",
+          "execution_id": "622",
+          "video_title": "Goli",
+          "image_model": "Seeddance"
+        }
+      }
+    ],
+    "Get Prompts": [
+      {
+        "json": {
+          "row_number": 6,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 0,
+          "prompt": "Take the product in the image and have the character show it to the camera. Place them at the center of the image with both the product and character visible. A woman with long wavy pink hair, wearing a light pink blazer and black top, sitting in the driver's seat of her car, holding up a bottle of Goli Apple Cider Vinegar Gummies with a red label and white text, subtle smile, genuine expression. UGC-style casual realism, amateur iPhone photo, slightly uneven framing, natural car interior lighting, everyday imperfections, portrait aspect ratio 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      }
+    ],
+    "Seedance🎵": [
+      {
+        "json": {
+          "image_result": "{\"resultUrls\":[\"https://tempfile.aiquickdraw.com/f/62a12d37601e85b3851a701436b3c1c7_1758650531_b8jujxr4.png\"]}"
+        }
+      }
+    ],
+    "Store Image(s)": [
+      {
+        "json": {
+          "images": "https://tempfile.aiquickdraw.com/f/62a12d37601e85b3851a701436b3c1c7_1758650531_b8jujxr4.png",
+          "image_model": "Seeddance",
+          "row_number": 6,
+          "execution_time": "2025-09-23T14:17:03.182-04:00"
+        }
+      }
+    ],
+    "Get Image(s)": [
+      {
+        "json": {
+          "row_number": 6,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 0,
+          "prompt": "Take the product in the image and have the character show it to the camera. Place them at the center of the image with both the product and character visible. A woman with long wavy pink hair, wearing a light pink blazer and black top, sitting in the driver's seat of her car, holding up a bottle of Goli Apple Cider Vinegar Gummies with a red label and white text, subtle smile, genuine expression. UGC-style casual realism, amateur iPhone photo, slightly uneven framing, natural car interior lighting, everyday imperfections, portrait aspect ratio 9:16.",
+          "image_model": "Seeddance",
+          "images": "https://tempfile.aiquickdraw.com/f/62a12d37601e85b3851a701436b3c1c7_1758650531_b8jujxr4.png",
+          "videos": "",
+          "execution_time": "2025-09-23T14:17:03.182-04:00"
+        }
+      },
+      {
+        "json": {
+          "row_number": 7,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 1,
+          "prompt": "Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 8,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 2,
+          "prompt": "Video continuation in the car, same woman holding the bottle, gesturing with her free hand as she speaks in British accent: 'I’ve been taking two a day and honestly it’s such a gamechanger to help me manage my appetite.' Relaxed, relatable expression. UGC-style amateur iPhone selfie video, fixed shot, natural interior light, uneven framing, 8 seconds, portrait 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 9,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 3,
+          "prompt": "Video in the car, woman smiling at the camera, still holding the Goli gummies bottle, enthusiastic nod, saying in British accent: 'So yeah… obsessed.' Casual, authentic vibe. UGC casual realism, iPhone video style, fixed camera, natural lighting, 8 seconds, portrait 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      }
+    ],
+    "Filter": [
+      {
+        "json": {
+          "row_number": 7,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 1,
+          "prompt": "Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 8,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 2,
+          "prompt": "Video continuation in the car, same woman holding the bottle, gesturing with her free hand as she speaks in British accent: 'I’ve been taking two a day and honestly it’s such a gamechanger to help me manage my appetite.' Relaxed, relatable expression. UGC-style amateur iPhone selfie video, fixed shot, natural interior light, uneven framing, 8 seconds, portrait 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 9,
+          "execution_id": 622,
+          "video_title": "Goli",
+          "scenes": 3,
+          "prompt": "Video in the car, woman smiling at the camera, still holding the Goli gummies bottle, enthusiastic nod, saying in British accent: 'So yeah… obsessed.' Casual, authentic vibe. UGC casual realism, iPhone video style, fixed camera, natural lighting, 8 seconds, portrait 9:16.",
+          "image_model": "Seeddance",
+          "images": "",
+          "videos": "",
+          "execution_time": ""
+        }
+      }
+    ],
+    "Call Create Video": [
+      {
+        "json": {
+          "video_results": ""
+        }
+      },
+      {
+        "json": {
+          "video_results": ""
+        }
+      },
+      {
+        "json": {
+          "video_results": ""
+        }
+      }
+    ],
+    "Wait3": [
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "0f5843af96c6b934557facbefb36eb7a"
+          }
+        }
+      }
+    ],
+    "Create Video": [
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "0f5843af96c6b934557facbefb36eb7a"
+          }
+        }
+      }
+    ],
+    "Get Video": [
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "0f5843af96c6b934557facbefb36eb7a",
+            "paramJson": "{\"aspectRatio\":\"9:16\",\"enableFallback\":false,\"enableTranslation\":true,\"imageUrls\":[\"https://tempfile.aiquickdraw.com/f/62a12d37601e85b3851a701436b3c1c7_1758650531_b8jujxr4.png\"],\"model\":\"veo3_fast\",\"prompt\":\"Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they’re gummies. They’re sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16\",\"translatedPrompt\":\"Video of a woman with long wavy pink hair, wearing light pink blazer and black top, in her car, holding the Goli Apple Cider Vinegar Gummies bottle. She excitedly shows it to the camera in selfie style, saying in a British accent: 'Ok guys this is crazy... this is apple cider vinegar but they're gummies. They're sweet, vegan, gluten free, the whole deal.' Candid pose, genuine excitement. UGC casual realism, amateur iPhone video, fixed camera, natural lighting, slight imperfections, 8 seconds, portrait 9:16\"}",
+            "response": {
+              "taskId": "0f5843af96c6b934557facbefb36eb7a",
+              "resolution": "720p",
+              "originUrls": null,
+              "resultUrls": [
+                "https://tempfile.aiquickdraw.com/p/0f5843af96c6b934557facbefb36eb7a_1758658271.mp4"
+              ],
+              "hasAudioList": [
+                true
+              ],
+              "seeds": [
+                66130
+              ]
+            },
+            "successFlag": 1,
+            "fallbackFlag": false,
+            "completeTime": 1758658273000,
+            "createTime": 1758658189000,
+            "errorCode": null,
+            "errorMessage": null
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Sheet Input(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Store Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sheet Input(s)": {
+      "main": [
+        [
+          {
+            "node": "Analyze image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UGC Creator Agent": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Prompts": {
+      "main": [
+        [
+          {
+            "node": "Get Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "UGC Creator Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Seedance🎵",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Nanobanana 🍌",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ChatGPT 🤖",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seedance🎵": {
+      "main": [
+        [
+          {
+            "node": "Store Image(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nanobanana 🍌": {
+      "main": [
+        [
+          {
+            "node": "Store Image(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatGPT 🤖": {
+      "main": [
+        [
+          {
+            "node": "Store Image(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prompts": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Image(s)": {
+      "main": [
+        [
+          {
+            "node": "Get Image(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image(s)": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Call Create Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Create Video": {
+      "main": [
+        [
+          {
+            "node": "Store Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Video": {
+      "main": [
+        [
+          {
+            "node": "Get Video(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contain Clips": {
+      "main": [
+        [
+          {
+            "node": "Final Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video(s)": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Contain Clips",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image1": {
+      "main": [
+        [
+          {
+            "node": "UGC Creator Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "UGC Creator Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "UGC Creator Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Image": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Get Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Video": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video": {
+      "main": [
+        [
+          {
+            "node": "Switch4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Get Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch4": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "82c57e9f-8f0b-4775-9224-e2ff6e2ffc50",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "nhnLF6NdKGhnJEMc",
+  "tags": []
+}

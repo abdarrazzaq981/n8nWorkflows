@@ -1,0 +1,867 @@
+{
+  "name": "(RS) AI Linkedin Copywriting agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        0
+      ],
+      "id": "59c1bacc-7912-43bc-975f-88c64258ecd3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1oSXnJXnjXuN1aHp33DhADn2biKJd2XOcwBXYK0T_swE",
+          "mode": "list",
+          "cachedResultName": "GHL Content Calendar / content ideas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oSXnJXnjXuN1aHp33DhADn2biKJd2XOcwBXYK0T_swE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1959424697,
+          "mode": "list",
+          "cachedResultName": "GHL Upload 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oSXnJXnjXuN1aHp33DhADn2biKJd2XOcwBXYK0T_swE/edit#gid=1959424697"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Day of the week",
+              "lookupValue": "Wednesday"
+            },
+            {
+              "lookupColumn": "All Social - Caption / Copywrite"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "9b6f0208-5d8c-49de-9f56-08e0231cbe8e",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        544,
+        16
+      ],
+      "id": "4983cb2b-b15d-49a5-9c1a-04616b8186ad",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        64
+      ],
+      "id": "6f6bae87-fd6d-4710-8f4f-72432851e6dc",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1424,
+        64
+      ],
+      "id": "d896d0ad-8c6e-4faf-a97a-2bef9497135d",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1oSXnJXnjXuN1aHp33DhADn2biKJd2XOcwBXYK0T_swE",
+          "mode": "list",
+          "cachedResultName": "GHL Content Calendar / content ideas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oSXnJXnjXuN1aHp33DhADn2biKJd2XOcwBXYK0T_swE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1959424697,
+          "mode": "list",
+          "cachedResultName": "GHL Upload 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oSXnJXnjXuN1aHp33DhADn2biKJd2XOcwBXYK0T_swE/edit#gid=1959424697"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "All Social - Caption / Copywrite": "={{ $json.output }}",
+            "All Social - Title": "={{ $('Limit').item.json['All Social - Title'] }}"
+          },
+          "matchingColumns": [
+            "All Social - Title"
+          ],
+          "schema": [
+            {
+              "id": "Day of the week",
+              "displayName": "Day of the week",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - Post date & time",
+              "displayName": "All Social - Post date & time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - content pillar",
+              "displayName": "All Social - content pillar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - Title",
+              "displayName": "All Social - Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "All Social - content description",
+              "displayName": "All Social - content description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social-webURL",
+              "displayName": "All Social-webURL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - Caption / Copywrite",
+              "displayName": "All Social - Caption / Copywrite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "All Social - image URL",
+              "displayName": "All Social - image URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social",
+              "displayName": "All Social",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - VideoUrl",
+              "displayName": "All Social - VideoUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - mediaOptimization",
+              "displayName": "All Social - mediaOptimization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - apply watermark",
+              "displayName": "All Social - apply watermark",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - tags",
+              "displayName": "All Social - tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - category",
+              "displayName": "All Social - category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "All Social - follow up comment",
+              "displayName": "All Social - follow up comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Facebook",
+              "displayName": "Facebook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Instagram",
+              "displayName": "Instagram",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Google (GBP)",
+              "displayName": "Google (GBP)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube",
+              "displayName": "YouTube",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube",
+              "displayName": "YouTube",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube",
+              "displayName": "YouTube",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok",
+              "displayName": "TikTok",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Community",
+              "displayName": "Community",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Community",
+              "displayName": "Community",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pinterest",
+              "displayName": "Pinterest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pinterest",
+              "displayName": "Pinterest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1952,
+        96
+      ],
+      "id": "db987a8e-8467-43ee-b677-aa65cc8f8264",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lcsoYN2irn2fgkGt",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        240,
+        0
+      ],
+      "id": "9ba5c341-fbb5-4b2b-b256-c12a6fa3945c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Idea: {{ $json.output.Title }}\n\nDescription: {{ $json.output.Text }}\n\nHook: {{ $json.output['Viral Hook'] }}",
+        "options": {
+          "systemMessage": "=You are an expert LinkedIn copywriter who creates viral, emotional, and impactful posts.\n\nYour job is to take the given IDEA and DESCRIPTION and turn them into a long-form LinkedIn post that follows these rules:\n1.\tAudience: Entrepreneurs, solopreneurs, business owners, and professionals.\n2.\tTone: Semi-professional, approachable, and human. Mix thought leadership, emotional storytelling, and practical advice.\n3.\tVoice: Write in the first person using “I” statements when appropriate, but always realistic and authentic (no fabricated memories).\n4.\tAnalogies: Prefer modern business, entrepreneurship, and tech analogies. Historical or cultural references are allowed if used in third person.\n5.\tLength: 150–250 words.\n6.\tFormatting Rules:\n\t•\tWrite exactly one sentence per line.\n\t•\tAdd a blank line after every sentence.\n\t•\tDo not use quotation marks at the beginning or end of the post.\n\t•\tWhen using arrows (→) or numbered lists, group the explanation with the arrow/number on the same block (do not add blank lines between those lines).\n\t•\tKeep posts scannable and easy to read.\n\t•\tEnsure sentences are concise (7–11 words).\n7.\tStructure:\n\t•\tStart with a viral hook (chosen from the prompt).\n\t•\tImportant: Rotate hooks across different posts. Do NOT default to “How to” or “Here’s how.”\n\t•\tDeliver a mix of story, insight, and practical takeaway.\n\t•\tWhen writing about Tools, describe what the tool does, then share one specific use case that saves time. Quantify time saved if possible.\n\t•\tWhen writing about Mindset, challenge assumptions, share the belief shift, then give one practical example of applying it.\n\t•\tWhen writing about Systems, show the chaos without it, explain the system, and give a step-by-step flow of how it improves efficiency.\n\t•\tUse arrows (→) or numbers for steps when listing.\n\t•\tEnd with the exact CTA provided (do not invent new ones).\n\nNotes\n\t•\tThe arrow (→) should always start a new line.\n\t•\tDo not invent a new CTA — copy it exactly as provided in the input.\n\n----\n\n#Example1\nAI is not replacing project managers.\n\nBut project managers who use AI?\n\nThey’ll replace the ones who don’t.\n\nHere’s the stack that works.\n\n1. ChatGPT\n↳ Where It Fits: Brainstorming, decision support, writing briefs\nWhat It Frees Up: Faster planning, sharper decisions\n\n2. Perplexity\n↳ Where It Fits: Research vendors, trends, competitive tools\nWhat It Frees Up: Instant clarity for better choices\n\n3. Fellow AI\n↳ Where It Fits: Meeting agendas, notes, action tracking\nWhat It Frees Up: Smoother meetings, better execution\n\n4. Gamma\n↳ Where It Fits: Sprint reviews, stakeholder decks, project updates\nWhat It Frees Up: Fast, polished slides without design work\n\n5. Guidde AI\n↳ Where It Fits: SOPs, tool walkthroughs, async video guides\nWhat It Frees Up: Scalable onboarding, fewer repeated explanations\n\n6. Notion AI\n↳ Where It Fits: Project docs, sprint plans, team knowledge base\nWhat It Frees Up: Centralized knowledge, clean collaboration\n\n7. ClickUp AI\n↳ Where It Fits: Smart task updates, daily summaries, project reports\nWhat It Frees Up: Less admin work, faster updates\n\n8. Magical AI\n↳ Where It Fits: Autofill emails, project updates, recurring data entry\nWhat It Frees Up: Hours saved on routine typing\n\n9. Bardeen AI\n↳ Where It Fits: Automate browser workflows, pull data, update project tools\nWhat It Frees Up: Hands-off execution, powerful integration\n\n--------------------------\n\n🔄 REPOST to share this tip with others.\n\n👉 Follow me, Randy Schutt, for more AI, business, and life tips. \n\n#Example2\nYou're wasting time if you're waiting for the perfect moment.\n\nWe've all been there: a breathtaking view, a memory we want to capture, but we hesitate.\n\nWe wait for the \"perfect light,\" the \"perfect angle,\" the \"perfect moment.\"\n\nBut the truth is, the light is always changing.\n\nThe angle is just one of many.\n\nAnd the \"perfect moment\" is right now.\n\nThis shot isn't perfect.\n\nThe horizon is a little crooked.\n\nThe colors aren't exactly how they were in real life.\n\nBut none of that matters.\n\nWhat matters is that this image captures a feeling—the feeling of being completely present in a moment of stunning, simple beauty.\n\nToo often, we apply this same perfectionism to our lives.\n\nWe wait to start the project until we have all the information.\n\nWe hold off on a conversation until we have the perfect words.\n\nWe delay an opportunity because it doesn't align with our ideal timeline.\n\nBut in that waiting, we lose the magic.\n\nWe lose the energy, the momentum, the raw, unfiltered experience.\n\nThe most profound moments in life aren't the ones we carefully plan and execute.\n\nThey're the ones we jump into, imperfectly, with all of our hearts.\n\nSo, let this be your reminder.\n\nDon't wait for the perfect moment.\n\nSeize the beautiful, imperfect one you're in.\n\nBecause life isn't about getting it right; it's about being present enough to live it.\n\nWhat's something you've been waiting for the \"perfect moment\" to do?\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        -48
+      ],
+      "id": "ec54111c-2f42-4431-b7a5-7b2e19631bb0",
+      "name": "Tip Copywriting Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "320af6a4-ef6b-4345-9281-7553164703f9",
+              "leftValue": "={{ $json['All Social - Caption / Copywrite'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "71dd05e8-b5eb-4363-90fd-28c589da70f2",
+              "leftValue": "={{ $json['All Social - Title'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "903ed1c3-550e-4122-a78b-d7534a349f0e",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        64
+      ],
+      "id": "a72c4ce5-bbfb-42f6-8b19-786f24bf6ee7",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "ifjZUU9cXIsiM0Hq",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Content Pillar: {{ $json['All Social - content pillar'] }}\nIdea: {{ $json['All Social - Title'] }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Write a single paragraph (40–50 words) for LinkedIn describing the topic. Start with the core pain. In one sentence, define the tool, mindset, process, or idea. Give one concrete use case that frees time, add revenue, or scales the business. End by describing what the reader can now do with the saved time (focus, sales, delivery, family). Constraints: one paragraph only; no bullets, no emojis, no hashtags, no questions, no “how to” or “here’s how,” no CTA. Be plain, specific, and credible. Use active voice. Avoid hype.\n\nLastly, create a title for this description.\n"
+            },
+            {
+              "type": "AIMessagePromptTemplate",
+              "message": "Randomly choose a viral hook\n\nViral Hook Options (must be rotated, not repeated too often)\n1.\t(#) ways to do (task)\n2.\tStop doing (activity)\n3.\t(Idea) vs (idea)\n4.\tIf you want… do this instead…\n5.\tYour (habit/strategy) is strategically flawed\n6.\tHow to (achieve something)\n7.\tMost people don’t… they just… Why? Because…\n8.\tThe unspoken truth about…\n9.\tHere’s one thing that will change everything…\n10.\tWhat if I told you that…?\n11.\tI used to believe… until I realized…\n12.\tThe single biggest mistake I made when…\n13.\tYou’re wasting your time if…"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        752,
+        16
+      ],
+      "id": "6781f8a0-5d55-4cf9-9616-968e4d36f176",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        752,
+        112
+      ],
+      "id": "4d4e1c8c-360a-4001-8526-2b023a41a434",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Title\": \"Gamma, a new way to build presentations\",\n\t\"Text\": \"The content output will go here\",\n    \"Viral Hook\": \"(idea) vs (idea)\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        112
+      ],
+      "id": "47ee437b-243a-49cb-a79c-f3d5923ecfce",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Tip Copywriting Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Tip Copywriting Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tip Copywriting Agent": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "Tip Copywriting Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Tip Copywriting Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "2d8702c0-c87a-4e09-b439-aaa79af47a04",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "vJ7619sP1BXoRI5I",
+  "tags": []
+}

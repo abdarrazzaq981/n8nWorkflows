@@ -1,0 +1,403 @@
+{
+  "name": "(RS) Stock Name Finder",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1952,
+        864
+      ],
+      "id": "435fe43c-d1da-4ec4-a4b0-0e33cb435d01",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RoW1pMBLLxs0YrdmFdkP_3wS08u2cKssYJ9dSgt7w5Y",
+          "mode": "list",
+          "cachedResultName": "Finance",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RoW1pMBLLxs0YrdmFdkP_3wS08u2cKssYJ9dSgt7w5Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1358646765,
+          "mode": "list",
+          "cachedResultName": "Top 50",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RoW1pMBLLxs0YrdmFdkP_3wS08u2cKssYJ9dSgt7w5Y/edit#gid=1358646765"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1664,
+        864
+      ],
+      "id": "c7b365c3-9ace-4041-8cb1-143b86a4927f",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Ticker:  {{ $json.Ticker }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a financial data extraction assistant. Your task is to identify the full company name and business sector for stock ticker symbols.  INSTRUCTIONS: 1. You will receive a stock ticker symbol (e.g., \"AAPL\", \"MSFT\") 2. Return the full company name and primary business sector 3. Use standard sector classifications: Technology, Healthcare, Consumer Cyclical, Consumer Defensive, Financial Services, Communication Services, Energy, Industrials, Basic Materials, Real Estate, Utilities 4. Return ONLY valid JSON in this exact format with no additional text:  {\"companyName\": \"Company Name Here\", \"sector\": \"Sector Here\"}  CRITICAL REQUIREMENTS: - No markdown code blocks - No explanations or commentary - No ```json``` wrapper - Just the raw JSON object - If you don't know the ticker, return: {\"companyName\": \"Unknown\", \"sector\": \"Unknown\"}  EXAMPLES: Input: AAPL Output: {\"companyName\": \"Apple Inc.\", \"sector\": \"Technology\"}  Input: JNJ Output: {\"companyName\": \"Johnson & Johnson\", \"sector\": \"Healthcare\"}  Input: WMT Output: {\"companyName\": \"Walmart Inc.\", \"sector\": \"Consumer Defensive\"} ```  ---  ### **User Prompt (Message):** ``` {{$json.Ticker}} That's it! Just send the ticker symbol.  LLM Chain Node Configuration: Node Name: \"Get Stock Info via AI\"  Chain Type: LLM Chain  Model: Claude Sonnet 4 (or GPT-4)  System Message: (paste the system message above)  Prompt: {{$json.Ticker}}  Output Parser: None (we'll parse JSON in next node)  Code Node After AI - Parse Response: javascript const ticker = $json.Ticker; const aiResponse = $('Get Stock Info via AI').first().json.response ||                     $('Get Stock Info via AI').first().json.output ||                    $('Get Stock Info via AI').first().json.text;  let stockInfo;  try {   // Remove any markdown formatting if present   let cleaned = aiResponse.trim();   cleaned = cleaned.replace(/```json\\n?/g, '').replace(/```\\n?/g, '');      // Parse JSON   stockInfo = JSON.parse(cleaned);    } catch (error) {   console.error(`Failed to parse AI response for ${ticker}:`, aiResponse);   stockInfo = {     companyName: 'Error - Could not parse',     sector: 'Unknown'   }; }  console.log(`${ticker}: ${stockInfo.companyName} - ${stockInfo.sector}`);  return [{   json: {     ticker: ticker,     companyName: stockInfo.companyName,     sector: stockInfo.sector   } }]; Comparison: Aspect\tPolygon API ✅\tAI LLM ⚠️ Accuracy\t100% (real data)\t~95% (may hallucinate) Speed\tFast (1 API call)\tSlower (LLM inference) Cost\tFree/cheap\tAI tokens cost Data Quality\tOfficial, up-to-date\tDepends on training data Reliability\tVery reliable\tMay fail to parse JSON Extra Data\tMarket cap, exchange, SIC codes\tJust name & sector My Strong Recommendation: 🎯 Use the Polygon API approach (first workflow)  Why:  Your Polygon subscription already gives you this data More accurate and reliable Faster execution No AI token costs Gets you additional useful data (market cap, exchange, etc.) Quick Implementation: Google Sheets Structure: A (Ticker)\tB (Company Name)\tC (Sector)\tD (Market Cap) AAPL\t← Fill this\t← Fill this\t← Fill this MSFT\t← Fill this\t← Fill this\t← Fill this ...\t\t\t Nodes Needed: Manual Trigger Google Sheets Read (Column A only) HTTP Request (Polygon ticker details) Code (Extract data) Google Sheets Update (Write to columns B, C, D) Which approach do you want to use?  Option A: Polygon API (recommended) ✅ Option B: AI LLM (if you insist) Let me know and I'll give you the exact node-by-node setup! "
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.8,
+      "position": [
+        -736,
+        800
+      ],
+      "id": "b32d44c1-c549-4dcf-b438-357ac81de844",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        896
+      ],
+      "id": "97219ca4-874d-4e0c-b506-1870238e4164",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Ticker\": \"AAPL\",\n\t\"Stock Name\": \"Apple\",\n    \"Sector\": \"Technology\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -592,
+        896
+      ],
+      "id": "35357f5d-b88b-4848-9cb9-310cd6e1512e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "batchSize": 2,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1088,
+        784
+      ],
+      "id": "7762adfb-bc10-4d9e-9a19-26ab76b1b77b",
+      "name": "Loop Over Items",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1RoW1pMBLLxs0YrdmFdkP_3wS08u2cKssYJ9dSgt7w5Y",
+          "mode": "list",
+          "cachedResultName": "Finance",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RoW1pMBLLxs0YrdmFdkP_3wS08u2cKssYJ9dSgt7w5Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1358646765,
+          "mode": "list",
+          "cachedResultName": "Top 50",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RoW1pMBLLxs0YrdmFdkP_3wS08u2cKssYJ9dSgt7w5Y/edit#gid=1358646765"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticker": "={{ $json.output.Ticker }}",
+            "Stock Name": "={{ $json.output['Stock Name'] }}",
+            "Sector": "={{ $json.output.Sector }}"
+          },
+          "matchingColumns": [
+            "Ticker"
+          ],
+          "schema": [
+            {
+              "id": "Ticker",
+              "displayName": "Ticker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Stock Name",
+              "displayName": "Stock Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sector",
+              "displayName": "Sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -384,
+        800
+      ],
+      "id": "92b70ae9-8b22-4640-bf14-a99c3e0520fd",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "192024e4-8f7b-4458-8b6b-c9e57a719466",
+              "leftValue": "={{ $json.Ticker }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "56eda4da-673b-4767-995c-19bd9b4b733d",
+              "leftValue": "={{ $json['Stock Name'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "988fb4c4-350c-493a-8073-e36d35563c70",
+              "leftValue": "={{ $json.Sector }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1456,
+        864
+      ],
+      "id": "f4a9570b-ba54-4f5d-bd31-269a674cdf03",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3134fb48-4297-4ba6-9f5e-52431f38eefd",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -1248,
+        768
+      ],
+      "id": "1f6e84be-2abb-49a5-b258-3d8d696d9eba",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "1634aba4-f74e-46f2-882e-91b61bd791f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "aHzC1zUx5RjLZom8",
+  "tags": []
+}

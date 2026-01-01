@@ -1,0 +1,673 @@
+{
+  "name": "(RS) Research Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        -16
+      ],
+      "id": "afb1ae92-47aa-4d50-9714-acbb183bd533",
+      "name": "Telegram Trigger",
+      "webhookId": "f59e7bd9-2606-44eb-8868-d9a70e0cfdd6",
+      "credentials": {
+        "telegramApi": {
+          "id": "7xb1ehzVwQstFtJX",
+          "name": "Example bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        80
+      ],
+      "id": "d40779a6-6c01-4a96-abe5-2b1f8cdc208c",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        -224
+      ],
+      "id": "eb0b9435-c15b-4055-8ea5-caa2415c2daa",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -368
+      ],
+      "id": "53834d8b-4b1b-4756-b159-e75a9e052889",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1456,
+        80
+      ],
+      "id": "adab73c9-cb14-4146-9067-01a35970c8af",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Xc1vfDwAl3ofkSB_0Q3TLsLGiHXqis3wtpi2A1dQmsM",
+          "mode": "list",
+          "cachedResultName": "Research",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xc1vfDwAl3ofkSB_0Q3TLsLGiHXqis3wtpi2A1dQmsM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xc1vfDwAl3ofkSB_0Q3TLsLGiHXqis3wtpi2A1dQmsM/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        -320
+      ],
+      "id": "30f400b6-0ba3-4fd7-aa2d-77f17779eb80",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "perplexity/sonar-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        688,
+        96
+      ],
+      "id": "4140fc2d-6a60-42f9-973a-223c73b6b7c8",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        96
+      ],
+      "id": "dbb00918-7e12-4f8e-aa97-231c0be6951c",
+      "name": "Think1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        784,
+        96
+      ],
+      "id": "e3b26ebd-ff64-43b9-ac15-e673244dd63e",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "Text",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "fa16d087-b794-4c25-ba6e-006fff1f033d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ea9716d4-659b-4722-a679-cfaf05d58c77",
+                    "leftValue": "Audio",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -368,
+        -16
+      ],
+      "id": "53422c1a-3193-4808-837b-c6157e07d8f9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        256,
+        144
+      ],
+      "id": "95ed4bec-b5ea-4aee-8577-4fa1755d76ba",
+      "name": "Transcribe a recording"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Insert Prompt",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        -32
+      ],
+      "id": "e2119ba7-be96-493b-aa46-bcdc3a42e52b",
+      "name": "Research Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Research Result",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        -32
+      ],
+      "id": "23883bcc-e97f-4da5-a191-862ee51a68b4",
+      "name": "Article Writer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Edit the input",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        -32
+      ],
+      "id": "f2e64223-584f-4e4e-b14c-8405eb37951f",
+      "name": "Editor Agent"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-haiku-4.5",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        64
+      ],
+      "id": "4772897a-1d67-4374-94a4-e3c99e276acc",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1808,
+        64
+      ],
+      "id": "15224ab1-f80e-4bd5-997d-60f6216f9af2",
+      "name": "Think2"
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2016,
+        -32
+      ],
+      "id": "6cda8db4-f0ae-4d23-b430-ddc4821b13d4",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2032,
+        144
+      ],
+      "id": "a0b088ef-252f-4bb4-b110-1cda60b63702",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2480,
+        -240
+      ],
+      "id": "896270fa-9c3f-4521-ad6b-34e143ded692",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2496,
+        -16
+      ],
+      "id": "02d6480f-76de-4614-a239-36f85bcbdb0e",
+      "name": "Send a message",
+      "webhookId": "24c0aed5-3633-46c7-93b9-ff222ce49062",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BNkXQrUjCcMMrd1E",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2496,
+        176
+      ],
+      "id": "a2abef1d-3224-4670-88c5-908446739f40",
+      "name": "Send a text message",
+      "webhookId": "eb2960a0-8b8f-4032-bd01-ad0396baf7fb",
+      "credentials": {
+        "telegramApi": {
+          "id": "7zDUD5IrDZMQz7ho",
+          "name": "Testbot 6000"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        144
+      ],
+      "id": "d096cbe8-b86f-45a4-91a4-36cdfce3bb52",
+      "name": "Get a file",
+      "webhookId": "af4f3f48-b9d6-42e2-a37d-52879bba0f48",
+      "credentials": {
+        "telegramApi": {
+          "id": "7xb1ehzVwQstFtJX",
+          "name": "Example bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Article Writer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Article Writer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Article Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Article Writer": {
+      "main": [
+        [
+          {
+            "node": "Editor Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Editor Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Editor Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Editor Agent": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "ba7da78d-20ae-43f5-a5ff-dee09928d224",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "iKGgByr2vLtA0MLm",
+  "tags": []
+}

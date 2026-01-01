@@ -1,0 +1,712 @@
+{
+  "name": "(RS) Veo3 Content Machine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        864,
+        1024
+      ],
+      "id": "8707f094-b56d-41da-8c4b-62cc237f90b9",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## Save Content",
+        "height": 520,
+        "width": 540,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2144,
+        880
+      ],
+      "id": "11184f1a-04a0-4418-8dd1-3ef30aaa58fe",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Create a Video",
+        "height": 740,
+        "width": 320,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1776,
+        736
+      ],
+      "id": "46120e6e-8d5c-474e-bfeb-791ee4ef7dae",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Input: Video Topic",
+        "height": 520,
+        "width": 840,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        800,
+        880
+      ],
+      "id": "98c3993e-1f29-4f46-8b76-ecb0892d17b1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"caption\": \"\",\n  \"idea\": \"\",\n  \"environment\": \"\",\n  \"status\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        1216
+      ],
+      "id": "8a1bfd01-9432-4bbe-b89f-7ebec5cce066",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Give me an idea to create the content about biblical characters speaking to thecamera and making a vlog",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=** Purpose **\nYou generate viral short-form video ideas inspired by biblical characters or scenes, styled like modern TikTok vlogs. These should feel personal, emotional, and often humorous.\n\n** Think Tool Prompt (used before generation) **\n“How can I take a biblical moment or character and turn it into a relatable, viral, or funny TikTok-style video idea that feels natural, emotional, or modern?”\n\n** Output Requirements **\nYour response must include:\n\n- caption – Short, poetic or funny, TikTok-style. Include emojis and 3–5 hashtags (e.g., #biblevlog #foryou #holycomedy #ancientvibes).\n- idea – 1–2 sentence summary of the action, story, or twist in the video.\n- environment – Describe what the set looks like: light, textures, mood, setting. Think “GoPro meets ancient Jerusalem.”\n- status – Must be \"to create\", without quotation marks\n\n** JSON Output Parser **\nEvery output must strictly follow this format:\n\n{\n  \"caption\": \"\",\n  \"idea\": \"\",\n  \"environment\": \"\",\n  \"status\": \"\"\n}\n\n** Sample Outputs **\n\nExample 1\n{\n  \"caption\": \"When Jesus gives you the silent treatment 🕊️😶 #jesusvlog #holycomedy\",\n  \"idea\": \"Jesus calmly stares at the camera while the disciple keeps asking, 'Are we lost?' – awkward silence builds up.\",\n  \"environment\": \"Desert trail, golden hour light, dry bushes around, warm rocky textures and wind softly blowing.\",\n  \"status\": \"ready for production\"\n}\n\nExample 2\n{\n  \"caption\": \"POV: You just met Mary Magdalene and she’s not what you expected 😳✨ #biblevlog #foryou\",\n  \"idea\": \"A modern-style introduction of Mary Magdalene where she breaks the fourth wall with sarcasm and confidence.\",\n  \"environment\": \"Dusty stone home with narrow light beams, clay walls, fabric drapes blowing slightly in the breeze.\",\n  \"status\": \"ready for production\"\n}\n\nExample 3\n{\n  \"caption\": \"Me trying to explain the flood before it happened 🌧️🐘 #noahvibes #bibletok\",\n  \"idea\": \"Noah explains why he’s building the ark, while others laugh in the background — like a vlog rant.\",\n  \"environment\": \"Half-built wooden structure, cloudy sky, goats wandering around, mud everywhere, distant laughter.\",\n  \"status\": \"concept only\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1024,
+        1024
+      ],
+      "id": "15a77fc9-7a32-411f-af8c-ba55b797c0d0",
+      "name": "Generate Video Idea"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a prompt for the Veo3 video based on the following information:\n\nIdea: {{ $json.output.idea }}\nEnvironment: {{ $json.output.environment }}",
+        "options": {
+          "systemMessage": "=** System Message **\n\nYou are a professional cinematic prompt generator for AI video tools. Your task is to convert a short-form video idea and its environment description (inspired by biblical or ancient-world themes) into a highly detailed, camera-aware, emotionally rich prompt suitable for generating a cinematic AI video using Veo3.\n\nYou must understand the emotional tone, visual aesthetics, and storytelling style of short-form TikTok videos that imitate biblical scenes with modern pacing and framing.\n\n** Veo3 Prompt Structure Guidelines **\n\nEach prompt should be natural, cinematic, and visually immersive, including:\n\n- Scene description – Describe the overall environment clearly (terrain, buildings, light, movement).\n- Character focus – If the idea involves a person, include their position, outfit style (biblical era), mood/expression, and framing (e.g., close-up, wide shot).\n- Camera movement – Always include one cinematic camera motion (e.g., slow push-in, handheld tracking, drone pan, orbit, dolly backward).\n- Time of day & lighting – Set the mood with light (e.g., golden hour, harsh daylight, candlelit interior).\n- Atmosphere & texture – Mention dust, wind, fabric movement, shadows, reflections, or imperfections in the scene to increase realism.\n- Style & quality – Include cinematic tone, analog warmth, slightly soft vintage film look, GoPro-like closeness if appropriate.\n\n** Input **\n- You will receive two fields: idea, environment\n- Return only the complete and detailed Veo3 prompt, no additional text.\n\n** Example Output **\nA biblical man stands in front of a half-built wooden ark, gesturing passionately as he explains something to the camera. The camera follows him handheld-style, moving slightly as he paces. In the background, groups of villagers are laughing and pointing. The sky is overcast with low clouds, and goats wander through muddy terrain. The man wears worn, ancient robes, his feet muddy, his tone frustrated but hopeful. The scene has a documentary-style realism, with soft golden highlights breaking through cloud gaps. Light wind moves fabric and rustles dry straw around the ark. Shot in cinematic 24fps with natural tones and slight vintage softness."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1344,
+        1024
+      ],
+      "id": "3b241da8-fb9d-4390-9db5-05de5201256c",
+      "name": "Generate Veo3 Prompt"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1888,
+        1040
+      ],
+      "id": "f04573f3-c906-4892-9061-3645f34c7061",
+      "name": "Wait 10 Minutes",
+      "webhookId": "db5cf2be-ef72-4b1e-bfaf-5da8aedba129"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 409869585,
+          "mode": "list",
+          "cachedResultName": "Veo3 content",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=409869585"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "video url": "={{ $json.data.response.resultUrls[0] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "idea",
+              "displayName": "idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "environment",
+              "displayName": "environment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video url",
+              "displayName": "video url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2368,
+        1056
+      ],
+      "id": "19750837-2f91-42e5-93d9-9b3f53ef221f",
+      "name": "Store the Video",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A",
+          "mode": "list",
+          "cachedResultName": "AI videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 409869585,
+          "mode": "list",
+          "cachedResultName": "Veo3 content",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KLD9eoc2p_8w8Chkk9j2F7tdwwrYE8fS_lUtTDTBx8A/edit#gid=409869585"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "==ROW()-1",
+            "caption": "={{ $('Generate Video Idea').item.json.output.caption }}",
+            "idea": "={{ $('Generate Video Idea').item.json.output.idea }}",
+            "environment": "={{ $('Generate Video Idea').item.json.output.environment }}",
+            "status": "={{ $('Generate Video Idea').item.json.output.status }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "idea",
+              "displayName": "idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "environment",
+              "displayName": "environment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video url",
+              "displayName": "video url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1664,
+        1024
+      ],
+      "id": "4ade3f1b-ea34-463e-88c8-95df760fe972",
+      "name": "Save Content Information",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0Y7G0IB7lkggPljK",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        1216
+      ],
+      "id": "9843c883-8e0f-477b-b627-f8d19c7d06fa",
+      "name": "Think2"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        1216
+      ],
+      "id": "d582d3a0-6e06-42ff-a4d8-ef3cfed483b5",
+      "name": "Think3"
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        928,
+        1216
+      ],
+      "id": "a5be2cbd-9267-48e8-a1d8-6fec39e31da5",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "x-ai/grok-4-fast:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        1216
+      ],
+      "id": "6152be78-8a60-4399-9f26-3f227b95d56c",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YcXUbCXVKiPvFEtG",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://kieai.erweima.ai/api/v1/veo/record-info",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1888,
+        1184
+      ],
+      "id": "9da71190-4040-47c4-b44e-67ad14c82585",
+      "name": "Get Videos"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kieai.erweima.ai/api/v1/veo/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"{{ $json.output.video_prompt }}\",\n  \"model\": \"veo3_fast\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1888,
+        864
+      ],
+      "id": "bf4b8fe8-4ce9-4a62-a2ea-73ebd640bcf9",
+      "name": "Create videos"
+    }
+  ],
+  "pinData": {
+    "Get Videos": [
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "41e48a475ae198a7014caf19bdbd81a3",
+            "paramJson": "{\"aspectRatio\":\"16:9\",\"enableFallback\":false,\"enableTranslation\":true,\"model\":\"veo3_fast\",\"prompt\":\"Realistic 4k footage close-up of a Damascus Steel Knife quickly cutting a Red Crystal Apple on a Marble Slab. It slices it quickly multiple times, each slice falls over as the knife moves to the next. The inside of the object being cut is also Crystal and inside it shows intricate and beautiful visual patterns. The sound is ASMR style.\",\"translatedPrompt\":\"Realistic 4k footage close-up of a Damascus Steel Knife quickly cutting a Red Crystal Apple on a Marble Slab. It slices it quickly multiple times, each slice falls over as the knife moves to the next. The inside of the object being cut is also Crystal and inside it shows intricate and beautiful visual patterns. The sound is ASMR style.\"}",
+            "response": {
+              "taskId": "41e48a475ae198a7014caf19bdbd81a3",
+              "resolution": "720p",
+              "originUrls": null,
+              "resultUrls": [
+                "https://tempfile.aiquickdraw.com/p/41e48a475ae198a7014caf19bdbd81a3_1758543750.mp4"
+              ],
+              "hasAudioList": [
+                true
+              ],
+              "seeds": [
+                77524
+              ]
+            },
+            "successFlag": 1,
+            "fallbackFlag": false,
+            "completeTime": 1758543752000,
+            "createTime": 1758543673000,
+            "errorCode": null,
+            "errorMessage": null
+          }
+        }
+      },
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "d1e78a7dcc2a25e03df4803ec110d58c",
+            "paramJson": "{\"aspectRatio\":\"16:9\",\"enableFallback\":false,\"enableTranslation\":true,\"model\":\"veo3_fast\",\"prompt\":\"Realistic 4k footage close-up of a Chef’s Knife quickly cutting a Blue Ice Dragon Fruit on a Wooden Cutting Board. It slices it quickly multiple times, each slice falls over as the knife moves to the next. The inside of the object being cut is also Ice and inside it shows intricate and beautiful visual patterns. The sound is ASMR style.\",\"translatedPrompt\":\"Realistic 4k footage close-up of a Chef's Knife quickly cutting a Blue Ice Dragon Fruit on a Wooden Cutting Board. It slices it quickly multiple times, each slice falls over as the knife moves to the next. The inside of the object being cut is also Ice and inside it shows intricate and beautiful visual patterns. The sound is ASMR style.\"}",
+            "response": {
+              "taskId": "d1e78a7dcc2a25e03df4803ec110d58c",
+              "resolution": "720p",
+              "originUrls": null,
+              "resultUrls": [
+                "https://tempfile.aiquickdraw.com/p/d1e78a7dcc2a25e03df4803ec110d58c_1758543765.mp4"
+              ],
+              "hasAudioList": [
+                true
+              ],
+              "seeds": [
+                75883
+              ]
+            },
+            "successFlag": 1,
+            "fallbackFlag": false,
+            "completeTime": 1758543767000,
+            "createTime": 1758543673000,
+            "errorCode": null,
+            "errorMessage": null
+          }
+        }
+      },
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "872aa64ef6d378831a0d66d74e85ef4a",
+            "paramJson": "{\"aspectRatio\":\"16:9\",\"enableFallback\":false,\"enableTranslation\":true,\"model\":\"veo3_fast\",\"prompt\":\"Realistic 4k footage close-up of a Japanese Santoku quickly cutting a Green Obsidian Pokéball on a Black Slate Tile. It slices it quickly multiple times, each slice falls over as the knife moves to the next. The inside of the object being cut is also Obsidian and inside it shows intricate and beautiful visual patterns. The sound is ASMR style.\",\"translatedPrompt\":\"Realistic 4k footage close-up of a Japanese Santoku quickly cutting a Green Obsidian Pokéball on a Black Slate Tile. It slices it quickly multiple times, each slice falls over as the knife moves to the next. The inside of the object being cut is also Obsidian and inside it shows intricate and beautiful visual patterns. The sound is ASMR style.\"}",
+            "response": {
+              "taskId": "872aa64ef6d378831a0d66d74e85ef4a",
+              "resolution": "720p",
+              "originUrls": null,
+              "resultUrls": [
+                "https://tempfile.aiquickdraw.com/p/872aa64ef6d378831a0d66d74e85ef4a_1758543772.mp4"
+              ],
+              "hasAudioList": [
+                true
+              ],
+              "seeds": [
+                24112
+              ]
+            },
+            "successFlag": 1,
+            "fallbackFlag": false,
+            "completeTime": 1758543774000,
+            "createTime": 1758543673000,
+            "errorCode": null,
+            "errorMessage": null
+          }
+        }
+      }
+    ],
+    "Create videos": [
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "41e48a475ae198a7014caf19bdbd81a3"
+          }
+        }
+      },
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "d1e78a7dcc2a25e03df4803ec110d58c"
+          }
+        }
+      },
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "872aa64ef6d378831a0d66d74e85ef4a"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Video Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Video Idea",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video Idea": {
+      "main": [
+        [
+          {
+            "node": "Generate Veo3 Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Veo3 Prompt": {
+      "main": [
+        [
+          {
+            "node": "Save Content Information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Get Videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Content Information": {
+      "main": [
+        [
+          {
+            "node": "Create videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Generate Video Idea",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Generate Veo3 Prompt",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Video Idea",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Veo3 Prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Videos": {
+      "main": [
+        [
+          {
+            "node": "Store the Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create videos": {
+      "main": [
+        [
+          {
+            "node": "Wait 10 Minutes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "12c91b10-7952-41eb-9c4c-da1e1494ae89",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "Hdv2El0yvfKMnGQD",
+  "tags": []
+}
